@@ -131,7 +131,7 @@ router.get("/jobs/:id", async (req, res) => {
         if (!mongoose.isValidObjectId(id)) {
             return res.status(422).json({
                 status: "FAILED",
-                message: "Prameter is not a valid id."
+                message: "Prameter is not a valid id.",
             })
         }
 
@@ -140,11 +140,73 @@ router.get("/jobs/:id", async (req, res) => {
         if (!job) {
             return res.status(404).json({
                 status: "FAILED",
-                message: "Job not existing."
+                message: "Job not existing.",
             })
         }
 
         return res.status(200).json(job)
+    } catch (error) {
+        return res.status(500).json({
+            status: "FAILED",
+            message: error.message,
+        })
+    }
+})
+
+router.put("/jobs/:id", async (req, res) => {
+    try {
+        const { id } = req.params
+
+        if (!mongoose.isValidObjectId(id)) {
+            return res.status(422).json({
+                status: "FAILED",
+                message: "Prameter is not a valid id.",
+            })
+        }
+
+        if (!(await Job.exists({ _id: id }))) {
+            return res.status(404).json({
+                status: "FAILED",
+                message: "Job not existing.",
+            })
+        }
+
+        const updatedJob = await Job.findByIdAndUpdate(id, req.body, {
+            new: true,
+        })
+
+        return res.status(200).json(updatedJob)
+    } catch (error) {
+        return res.status(500).json({
+            status: "FAILED",
+            message: error.message,
+        })
+    }
+})
+
+router.delete("/jobs/:id", async (req, res) => {
+    try {
+        const { id } = req.params
+
+        if (!mongoose.isValidObjectId(id)) {
+            return res.status(422).json({
+                status: "FAILED",
+                message: "Prameter is not a valid id.",
+            })
+        }
+
+        const job = await Job.findById(id)
+
+        if (!job) {
+            return res.status(404).json({
+                status: "FAILED",
+                message: "Job not existing.",
+            })
+        } else {
+            await job.deleteOne()
+        }
+
+        return res.status(204).send()
     } catch (error) {
         return res.status(500).json({
             status: "FAILED",
