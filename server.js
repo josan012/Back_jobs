@@ -4,7 +4,7 @@ const express = require("express")
 const app = express()
 const port = process.env.PORT
 
-const JobRouter = require("./api/Job")
+const JobRouter = require("./routes/jobsRoute")
 
 const bodyParser = express.json
 app.use(bodyParser())

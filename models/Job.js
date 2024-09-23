@@ -17,7 +17,7 @@ const JobSchema = new Schema(
         },
         date: {
             type: Date,
-            required: true
+            default: Date.now()
         },
         firstSectionHeading: {
             type: String,
