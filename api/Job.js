@@ -1,3 +1,4 @@
+const mongoose = require("mongoose")
 const express = require("express")
 const router = express.Router()
 
@@ -115,6 +116,35 @@ router.get("/jobs", async (req, res) => {
          */
 
         return res.status(200).json(jobs)
+    } catch (error) {
+        return res.status(500).json({
+            status: "FAILED",
+            message: error.message,
+        })
+    }
+})
+
+router.get("/jobs/:id", async (req, res) => {
+    try {
+        const { id } = req.params
+
+        if (!mongoose.isValidObjectId(id)) {
+            return res.status(422).json({
+                status: "FAILED",
+                message: "Prameter is not a valid id."
+            })
+        }
+
+        const job = await Job.findById(id)
+
+        if (!job) {
+            return res.status(404).json({
+                status: "FAILED",
+                message: "Job not existing."
+            })
+        }
+
+        return res.status(200).json(job)
     } catch (error) {
         return res.status(500).json({
             status: "FAILED",
