@@ -97,7 +97,7 @@ exports.getJobById = async (req, res) => {
         if (!mongoose.isValidObjectId(req.params.id)) {
             return res.status(422).json({
                 status: "FAILED",
-                message: "Prameter is not a valid id.",
+                message: "Parameter is not a valid id.",
             })
         }
 
@@ -124,7 +124,7 @@ exports.updateJobById = async (req, res) => {
         if (!mongoose.isValidObjectId(req.params.id)) {
             return res.status(422).json({
                 status: "FAILED",
-                message: "Prameter is not a valid id.",
+                message: "Parameter is not a valid id.",
             })
         }
 
@@ -135,9 +135,13 @@ exports.updateJobById = async (req, res) => {
             })
         }
 
-        const updatedJob = await Job.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-        })
+        const updatedJob = await Job.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            {
+                new: true,
+            }
+        )
 
         return res.status(200).json(updatedJob)
     } catch (error) {
@@ -153,7 +157,7 @@ exports.deleteJobById = async (req, res) => {
         if (!mongoose.isValidObjectId(req.params.id)) {
             return res.status(422).json({
                 status: "FAILED",
-                message: "Prameter is not a valid id.",
+                message: "Parameter is not a valid id.",
             })
         }
 
@@ -174,5 +178,42 @@ exports.deleteJobById = async (req, res) => {
             status: "FAILED",
             message: error.message,
         })
+    }
+}
+
+exports.searchJob = async (req, res) => {
+    try {
+        const { location, jobTitle, type } = req.query
+
+        const query = {}
+
+        if (location) {
+            query.location = { $in: location }
+        }
+
+        if (jobTitle) {
+            query.jobTitle = { $regex: jobTitle, $options: "i" }
+        }
+
+        if (type) {
+            query.type = { $in: type }
+        }
+
+        const jobs = await Job.find(query)
+
+        return res.status(200).json(jobs)
+    } catch (error) {
+        return res.status(500).json({
+            status: "FAILED",
+            message: error.message,
+        })
+    }
+}
+
+exports.handleJobs = (req, res, next) => {
+    if (Object.keys(req.query).length === 0) {
+        this.getAllJobs(req, res, next)
+    } else {
+        this.searchJob(req, res, next)
     }
 }

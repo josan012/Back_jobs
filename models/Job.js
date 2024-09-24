@@ -5,51 +5,60 @@ const JobSchema = new Schema(
     {
         jobTitle: {
             type: String,
-            required: true
+            required: true,
         },
         location: {
             type: String,
-            required: true
+            required: true,
         },
         type: {
             type: String,
-            required: true
+            required: true,
+            enum: ["Part-time", "Full-time", "Flexible"],
         },
         date: {
             type: Date,
-            default: Date.now()
+            default: Date.now(),
         },
         firstSectionHeading: {
             type: String,
-            required: true
+            required: true,
         },
-        firstSectionList: [{
-            type: String
-        }],
+        firstSectionList: [
+            {
+                type: String,
+            },
+        ],
         secondSectionHeading: {
             type: String,
-            required: true
+            required: true,
         },
-        secondSectionList: [{
-            type: String
-        }],
+        secondSectionList: [
+            {
+                type: String,
+            },
+        ],
         thirdSectionHeading: {
             type: String,
-            required: true
+            required: true,
         },
-        thirdSectionList: [{
-            type: String
-        }],
+        thirdSectionList: [
+            {
+                type: String,
+            },
+        ],
         fourthSectionHeading: {
             type: String,
-            required: true
+            required: true,
         },
-        fourthSectionList: [{
-            type: String
-        }],
+        fourthSectionList: [
+            {
+                type: String,
+            },
+        ],
     },
     {
-        timestamps: true
+        timestamps: true,
     }
 )
 
