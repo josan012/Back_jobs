@@ -22,7 +22,6 @@ const JobSchema = new Schema(
         },
         firstSectionHeading: {
             type: String,
-            required: true,
         },
         firstSectionList: [
             {
@@ -31,7 +30,6 @@ const JobSchema = new Schema(
         ],
         secondSectionHeading: {
             type: String,
-            required: true,
         },
         secondSectionList: [
             {
@@ -40,7 +38,6 @@ const JobSchema = new Schema(
         ],
         thirdSectionHeading: {
             type: String,
-            required: true,
         },
         thirdSectionList: [
             {
@@ -49,7 +46,6 @@ const JobSchema = new Schema(
         ],
         fourthSectionHeading: {
             type: String,
-            required: true,
         },
         fourthSectionList: [
             {

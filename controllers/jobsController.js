@@ -14,46 +14,6 @@ exports.createJob = async (req, res) => {
                 status: "FAILED",
                 message: "location is required!",
             })
-        } else if (!req.body.firstSectionHeading) {
-            return res.status(422).json({
-                status: "FAILED",
-                message: "firstSectionHeading is required!",
-            })
-        } else if (!req.body.firstSectionList) {
-            return res.status(422).json({
-                status: "FAILED",
-                message: "firstSectionList is required!",
-            })
-        } else if (!req.body.secondSectionHeading) {
-            return res.status(422).json({
-                status: "FAILED",
-                message: "secondSectionHeading is required!",
-            })
-        } else if (!req.body.secondSectionList) {
-            return res.status(422).json({
-                status: "FAILED",
-                message: "secondSectionList is required!",
-            })
-        } else if (!req.body.thirdSectionHeading) {
-            return res.status(422).json({
-                status: "FAILED",
-                message: "thirdSectionHeading is required!",
-            })
-        } else if (!req.body.thirdSectionList) {
-            return res.status(422).json({
-                status: "FAILED",
-                message: "thirdSectionList is required!",
-            })
-        } else if (!req.body.fourthSectionHeading) {
-            return res.status(422).json({
-                status: "FAILED",
-                message: "fourthSectionHeading is required!",
-            })
-        } else if (!req.body.fourthSectionList) {
-            return res.status(422).json({
-                status: "FAILED",
-                message: "fourthSectionList is required!",
-            })
         }
 
         const newJob = await Job.create(req.body)

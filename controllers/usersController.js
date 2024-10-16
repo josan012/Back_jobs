@@ -99,13 +99,12 @@ const sendOTPVerificationEmail = async ({ _id, email }, res) => {
 }
 
 exports.register = (req, res) => {
-    let { name, email, password, dateOfBirth, role } = req.body
+    let { name, email, password, role } = req.body
     name = name.trim()
     email = email.trim()
     password = password.trim()
-    dateOfBirth = dateOfBirth.trim()
 
-    if (name == "" || email == "" || password == "" || dateOfBirth == "") {
+    if (name == "" || email == "" || password == "") {
         return res.status(422).json({
             status: "FAILED",
             message: "Empty input fields!",
@@ -119,11 +118,6 @@ exports.register = (req, res) => {
         return res.status(422).json({
             status: "FAILED",
             message: "Invalid email entered",
-        })
-    } else if (!new Date(dateOfBirth).getTime()) {
-        return res.status(422).json({
-            status: "FAILED",
-            message: "Invalid date of birth entered",
         })
     } else if (
         !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.+-_])[A-Za-z\d@$!%*?&.+-_]{8,}$/.test(
@@ -157,7 +151,6 @@ exports.register = (req, res) => {
                                 name,
                                 email,
                                 password: hashedPassword,
-                                dateOfBirth,
                                 verified: false,
                                 role: role ?? "member",
                                 "2faEnable": false,
@@ -166,9 +159,15 @@ exports.register = (req, res) => {
 
                             newUser
                                 .save()
-                                .then((result) => {
-                                    // handle account verification
-                                    sendOTPVerificationEmail(result, res)
+                                .then(() => {
+                                    return res.status(201).json({
+                                        status: "SUCCESS",
+                                        message: "User created successfully",
+                                        data: {
+                                            userId: newUser._id,
+                                            email,
+                                        }
+                                    })
                                 })
                                 .catch((error) => {
                                     console.error(error)
@@ -225,7 +224,7 @@ exports.verifyOTP = async (req, res) => {
                     await UserVerification.deleteMany({ userId })
                     throw new Error("Code has expired. Please request again.")
                 } else {
-                    const validOTP = bcrypt.compare(otp, hashedOTP)
+                    const validOTP = await bcrypt.compare(otp, hashedOTP)
 
                     if (!validOTP) {
                         // supplied otp is wrong
@@ -259,12 +258,11 @@ exports.verifyOTP = async (req, res) => {
 // resend verification
 exports.resendOTP = async (req, res) => {
     try {
-        let { userId, email } = req.body
+        const { userId, email } = req.body
 
         if (!userId || !email) {
             throw new Error("Empty user details are not allowed")
         } else {
-            // delete existing records and resend
             await UserVerification.deleteMany({ userId })
             sendOTPVerificationEmail({ _id: userId, email }, res)
         }
@@ -349,7 +347,6 @@ exports.login = async (req, res) => {
                 id: user._id,
                 name: user.name,
                 email: user.email,
-                dateOfBirth: user.dateOfBirth,
                 accessToken,
                 refreshToken,
             })
@@ -445,6 +442,8 @@ exports.currentUser = async (req, res) => {
             id: user._id,
             name: user.name,
             email: user.email,
+            verified: user.verified,
+            role: user.role
         })
     } catch (error) {
         return res.status(500).json({
@@ -599,7 +598,6 @@ exports.login2fa = async (req, res) => {
             id: user._id,
             name: user.name,
             email: user.email,
-            dateOfBirth: user.dateOfBirth,
             accessToken,
             refreshToken,
         })

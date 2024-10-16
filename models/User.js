@@ -15,10 +15,6 @@ const UserSchema = new Schema(
             type: String,
             required: true,
         },
-        dateOfBirth: {
-            type: Date,
-            required: true,
-        },
         verified: {
             type: Boolean,
             required: false,

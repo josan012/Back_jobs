@@ -1,6 +1,7 @@
 const express = require("express")
 const router = express.Router()
 const jwt = require("jsonwebtoken")
+require("dotenv").config()
 
 const usersController = require("../controllers/usersController")
 
